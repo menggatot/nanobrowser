@@ -374,6 +374,9 @@
   "options_models_providers_placeholders_baseUrl_llama": {
     "message": "URL Base da API Llama (padrão para https://api.llama.com/v1)"
   },
+  "options_models_providers_placeholders_baseUrl_anthropic": {
+    "message": "URL Base da Anthropic (opcional, padrão para https://api.anthropic.com)"
+  },
   "options_models_providers_placeholders_baseUrl_ollama": {
     "message": "URL base do Ollama"
   },
@@ -391,6 +394,21 @@
   },
   "options_models_providers_models_openrouter_empty": {
     "message": "Nenhum modelo selecionado. Adicione nomes de modelos manualmente, se necessário."
+  },
+  "options_models_providers_models_fetch": {
+    "message": "Listar modelos"
+  },
+  "options_models_providers_models_fetch_loading": {
+    "message": "Listando..."
+  },
+  "options_models_providers_models_fetch_error": {
+    "message": "Não foi possível buscar modelos. Verifique a URL base e a chave de API."
+  },
+  "options_models_providers_models_fetch_requiresKey": {
+    "message": "A chave de API é obrigatória para buscar modelos."
+  },
+  "options_models_providers_models_fetch_invalidBaseUrl": {
+    "message": "A URL base é inválida."
   },
   "options_models_providers_ollama_reminder": {
     "message": "a variável de ambiente DEVE ser definida para o servidor Ollama."

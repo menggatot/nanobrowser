@@ -262,12 +262,26 @@ export function createChatModel(providerConfig: ProviderConfig, modelConfig: Mod
     case ProviderTypeEnum.Anthropic: {
       // For Opus models, only support temperature, not topP
       // For 4.5 models, only support either temperature or topP, not both, so we only use temperature to align with Opus
+      const isCustomBaseUrl = Boolean(providerConfig.baseUrl?.trim());
+      const defaultHeaders: Record<string, string> = {
+        'anthropic-version': '2023-06-01',
+        'x-api-key': providerConfig.apiKey,
+      };
+      if (!isCustomBaseUrl) {
+        defaultHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
+      }
+      const clientOptions: Record<string, unknown> = { defaultHeaders };
+      if (isCustomBaseUrl) {
+        const trimmedBaseUrl = providerConfig.baseUrl!.trim();
+        clientOptions.baseURL = trimmedBaseUrl;
+        clientOptions.baseUrl = trimmedBaseUrl;
+      }
       const args = {
         model: modelConfig.modelName,
         apiKey: providerConfig.apiKey,
         maxTokens,
         temperature,
-        clientOptions: {},
+        clientOptions,
       };
       return new ChatAnthropic(args);
     }
