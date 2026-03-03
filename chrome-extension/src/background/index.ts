@@ -55,7 +55,6 @@ chrome.tabs.onRemoved.addListener(tabId => {
 
 logger.info('background loaded');
 
-// Strip Origin header for custom Anthropic gateway requests to prevent 401s.
 updateAnthropicOriginRules().catch(e => logger.error('Failed to set Anthropic origin rules:', e));
 llmProviderStore.subscribe(() => {
   updateAnthropicOriginRules().catch(e => logger.error('Failed to update Anthropic origin rules:', e));

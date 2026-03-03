@@ -396,21 +396,6 @@
   "options_models_providers_models_openrouter_empty": {
     "message": "No models selected. Add model names manually if needed."
   },
-  "options_models_providers_models_fetch": {
-    "message": "List models"
-  },
-  "options_models_providers_models_fetch_loading": {
-    "message": "Listing..."
-  },
-  "options_models_providers_models_fetch_error": {
-    "message": "Could not fetch models. Check base URL and API key."
-  },
-  "options_models_providers_models_fetch_requiresKey": {
-    "message": "API key is required to fetch models."
-  },
-  "options_models_providers_models_fetch_invalidBaseUrl": {
-    "message": "Base URL is invalid."
-  },
   "options_models_providers_ollama_reminder": {
     "message": "environment variable MUST be set for the Ollama server."
   },

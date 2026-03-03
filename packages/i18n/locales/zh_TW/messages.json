@@ -391,21 +391,6 @@
   "options_models_providers_models_openrouter_empty": {
     "message": "未選擇任何模型。如有需要，請手動新增模型名稱。"
   },
-  "options_models_providers_models_fetch": {
-    "message": "列出模型"
-  },
-  "options_models_providers_models_fetch_loading": {
-    "message": "列出中..."
-  },
-  "options_models_providers_models_fetch_error": {
-    "message": "無法取得模型。請檢查基礎 URL 與 API 金鑰。"
-  },
-  "options_models_providers_models_fetch_requiresKey": {
-    "message": "需要 API 金鑰才能取得模型。"
-  },
-  "options_models_providers_models_fetch_invalidBaseUrl": {
-    "message": "基礎 URL 無效。"
-  },
   "options_models_providers_ollama_reminder": {
     "message": "請務必為 Ollama 伺服器設定環境變數。"
   },

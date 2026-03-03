@@ -87,7 +87,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   const [availableModels, setAvailableModels] = useState<
     Array<{ provider: string; providerName: string; model: string }>
   >([]);
-  const [modelListStatus, setModelListStatus] = useState<Record<string, { loading: boolean; error?: string }>>({});
   // State for model input handling
 
   const [selectedSpeechToTextModel, setSelectedSpeechToTextModel] = useState<string>('');
@@ -303,110 +302,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
       ...prev,
       [provider]: modelsString,
     }));
-  };
-
-  const buildAnthropicModelsUrl = (baseUrl?: string) => {
-    const fallbackBaseUrl = 'https://api.anthropic.com';
-    const candidate = baseUrl?.trim() ? baseUrl.trim() : fallbackBaseUrl;
-    try {
-      const normalized = candidate.endsWith('/') ? candidate : `${candidate}/`;
-      return new URL('v1/models', normalized).toString();
-    } catch (error) {
-      console.error('Invalid Anthropic base URL:', error);
-      return null;
-    }
-  };
-
-  const listAnthropicModels = async (providerId: string) => {
-    const providerConfig = providers[providerId];
-    if (!providerConfig?.apiKey?.trim()) {
-      setModelListStatus(prev => ({
-        ...prev,
-        [providerId]: {
-          loading: false,
-          error: t('options_models_providers_models_fetch_requiresKey'),
-        },
-      }));
-      return;
-    }
-
-    const modelsUrl = buildAnthropicModelsUrl(providerConfig.baseUrl);
-    if (!modelsUrl) {
-      setModelListStatus(prev => ({
-        ...prev,
-        [providerId]: {
-          loading: false,
-          error: t('options_models_providers_models_fetch_invalidBaseUrl'),
-        },
-      }));
-      return;
-    }
-
-    setModelListStatus(prev => ({
-      ...prev,
-      [providerId]: {
-        loading: true,
-      },
-    }));
-
-    try {
-      const isCustomBaseUrl = Boolean(providerConfig.baseUrl?.trim());
-      const fetchHeaders: Record<string, string> = {
-        'anthropic-version': '2023-06-01',
-        'x-api-key': providerConfig.apiKey,
-        Accept: 'application/json',
-      };
-      if (!isCustomBaseUrl) {
-        fetchHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
-      }
-      const response = await fetch(modelsUrl, {
-        method: 'GET',
-        headers: fetchHeaders,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch models: ${response.status}`);
-      }
-
-      const payload = (await response.json()) as {
-        data?: Array<{ id?: string }>;
-        models?: Array<{ id?: string }>;
-      };
-
-      const rawModels = payload.data || payload.models || [];
-      const modelNames = rawModels
-        .map(model => model.id)
-        .filter((model): model is string => Boolean(model))
-        .filter((model, index, self) => self.indexOf(model) === index);
-
-      setProviders(prev => {
-        const providerData = prev[providerId];
-        if (!providerData) return prev;
-        return {
-          ...prev,
-          [providerId]: {
-            ...providerData,
-            modelNames,
-          },
-        };
-      });
-      setModifiedProviders(prev => new Set(prev).add(providerId));
-      setModelListStatus(prev => ({
-        ...prev,
-        [providerId]: {
-          loading: false,
-        },
-      }));
-    } catch (error) {
-      console.error('Failed to list Anthropic models:', error);
-      setModelListStatus(prev => ({
-        ...prev,
-        [providerId]: {
-          loading: false,
-          error: t('options_models_providers_models_fetch_error'),
-        },
-      }));
-    }
   };
 
   const addModel = (provider: string, model: string) => {
@@ -1621,28 +1516,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                   className={`min-w-[150px] flex-1 border-none text-sm ${isDarkMode ? 'bg-transparent text-gray-200' : 'bg-transparent text-gray-700'} p-1 outline-none`}
                                 />
                               </div>
-                              {(providerConfig.type as ProviderTypeEnum) === ProviderTypeEnum.Anthropic && (
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="secondary"
-                                    onClick={() => listAnthropicModels(providerId)}
-                                    disabled={modelListStatus[providerId]?.loading}
-                                    className={`text-xs ${
-                                      isDarkMode
-                                        ? 'border-slate-600 bg-slate-700 text-gray-200 hover:bg-slate-600'
-                                        : 'border-gray-200 bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}>
-                                    {modelListStatus[providerId]?.loading
-                                      ? t('options_models_providers_models_fetch_loading')
-                                      : t('options_models_providers_models_fetch')}
-                                  </Button>
-                                  {modelListStatus[providerId]?.error && (
-                                    <span className={`text-xs ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
-                                      {modelListStatus[providerId]?.error}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
                               <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 {t('options_models_providers_models_instructions')}
                               </p>
